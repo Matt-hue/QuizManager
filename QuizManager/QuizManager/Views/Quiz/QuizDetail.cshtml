@@ -1,0 +1,203 @@
+﻿@model QuizDetailViewModel
+
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-9">
+            <h3 class="text-center3">@Model.QuizTitle</h3>
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1">
+            <role-access asp-roles="@RoleNames.EDIT">
+                <form class="form-inline" asp-controller="@nameof(Quiz)" asp-action="@nameof(Quiz.CreateQuestion)" method="get">
+                    <input type="hidden" asp-for="QuizId" />
+                    <button type="submit" class="btn"><i data-feather="plus-circle"></i></button>
+                </form>
+            </role-access>
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1">
+            <role-access asp-roles="@RoleNames.EDIT">
+                <form class="form-inline" asp-controller="@nameof(Quiz)" asp-action="@nameof(Quiz.DeleteQuiz)">
+                    <input type="hidden" asp-for="QuizId" />
+                    <button type="submit" class="btn"><i data-feather="trash-2"></i></button>
+                </form>
+            </role-access>
+        </div>
+    </div>
+</div>
+
+@if (!Model.Questions.Any())
+	{
+        <br />
+        <hr />
+        <br />
+        <h5 class="text-center"><em>Currently no questions exist for this quiz</em></h5>
+        <br />
+        <hr />
+	}
+
+@foreach (var question in Model.Questions)
+{
+
+    bool isFirst = (question.Order == 0);
+    bool isLast = (question.Order == Model.Questions.Count() - 1);
+
+<div class="card m-3">
+    <div class="container">
+            <div class="row">
+                <div class="col-xs-1 col-sm-1 col-md-1 border rounded">
+                    <h4>@question.Order</h4>
+                </div>
+                <div class="col-xs-11 col-sm-11 col-md-11 col-lg-7 border-bottom rounded">
+                    <role-access asp-roles="@RoleNames.RESTRICTED">
+                        <h5 class="text-center">@question.Title</h5>
+                    </role-access>
+                    <role-access asp-roles="@RoleNames.EDIT, @RoleNames.VIEW">
+                        <a data-toggle="collapse" href="@(string.Concat("#collapseAnswers", question.QuestionId.ToString()))" role="button" aria-expanded="false" aria-controls="@(string.Concat("collapseAnswers", question.QuestionId.ToString()))">
+                            <h5 class="text-center">@question.Title</h5>
+                        </a>
+                    </role-access>
+
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1 border-bottom">
+                    <role-access asp-roles="@RoleNames.EDIT">
+                        @if (isFirst)
+                        {
+                            <button type="button" class="btn" disabled="disabled"><i data-feather="chevron-up"></i></button>
+                        }
+                        else
+                        {
+                            <form class="form-inline" asp-controller="@nameof(Quiz)"
+                                  asp-action="@nameof(Quiz.ReorderQuestion)"
+                                  method="post">
+                                <input type="hidden" asp-for="QuizId" />
+                                <input type="hidden" name="questionId" value="@question.QuestionId" />
+                                <input type="hidden" name="position" value="@(question.Order - 1)" />
+                                <button type="submit" class="btn"><i data-feather="chevron-up"></i></button>
+                            </form>
+                        }
+                    </role-access></div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1 border-bottom">
+                    <role-access asp-roles="@RoleNames.EDIT">
+                        @if (isLast)
+                        {
+                            <button type="button" class="btn" disabled="disabled"><i data-feather="chevron-down"></i></button>
+                        }
+                        else
+                        {
+                            <form class="form-inline" asp-controller="@nameof(Quiz)"
+                                  asp-action="@nameof(Quiz.ReorderQuestion)"
+                                  method="post">
+                                <input type="hidden" asp-for="QuizId" />
+                                <input type="hidden" name="questionId" value="@question.QuestionId" />
+                                <input type="hidden" name="position" value="@(question.Order + 1)" />
+                                <button type="submit" class="btn"><i data-feather="chevron-down"></i></button>
+                            </form>
+                        }
+                    </role-access>
+                </div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1 border-bottom">
+                    <role-access asp-roles="@RoleNames.EDIT">
+
+                        <form class="form-inline" asp-controller="@nameof(Quiz)"
+                              asp-action="@nameof(Quiz.EditQuestion)"
+                              method="get">
+                            <input type="hidden" asp-for="QuizId" />
+                            <input type="hidden" name="questionId" value="@question.QuestionId" />
+                            <button type="submit" class="btn"><i data-feather="edit-3"></i></button>
+                        </form>
+
+                    </role-access></div>
+                <div class="col-xs-3 col-sm-3 col-md-3 col-lg-1 border-bottom">
+                    <role-access asp-roles="@RoleNames.EDIT">
+                            <form class="form-inline" asp-controller="@nameof(Quiz)" asp-action="@nameof(Quiz.DeleteQuestion)">
+                                <input type="hidden" asp-for="@Model.QuizId" />
+                                <input type="hidden" name="QuestionId" value="@question.QuestionId" />
+                                <button type="submit" class="btn"><i data-feather="trash-2"></i></button>
+                            </form>
+                    </role-access>
+                </div>
+            </div>
+    </div>
+
+
+    <role-access asp-roles="@RoleNames.EDIT, @RoleNames.VIEW">
+        <div class="collapse" id="@(string.Concat("collapseAnswers", question.QuestionId.ToString()))">
+            <div class="card card-body card-color">
+                <div class="container">
+
+                @if (question.Answers.Count() == 0)
+                {
+                    <p><i>This Question has no answers yet</i></p>
+                }
+
+                @{
+                    int i = 0;
+                    var answerIndex = new string[] { "A:", "B:", "C:", "D:", "E:", "F:" };
+
+                    @foreach (var answer in question.Answers)
+                    {
+                <div class="row justify-content-end">
+                    <div class="col-xs-1 col-sm-1 col-md-1 col-lg-1">
+                        <p>@answerIndex[i]</p>
+                    </div>
+                    <div class="col-xs-10 col-sm-10 col-md-9 col-lg-9">
+                        <p>@answer.Title</p>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1">
+                        <role-access asp-roles="@RoleNames.EDIT">
+                            <form class="form-inline" asp-controller="@nameof(Quiz)"
+                                  asp-action="@nameof(Quiz.EditAnswer)"
+                                  method="get">
+                                <input type="hidden" asp-for="QuizId" />
+                                <input type="hidden" name="answerId" value="@answer.AswerId" />
+                                <button type="submit" class="btn"><i data-feather="edit-3"></i></button>
+                            </form>
+                        </role-access>
+                    </div>
+                    <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1">
+                        <role-access asp-roles="@RoleNames.EDIT">
+                            <delete-answer-authorizer question-id="@question.QuestionId">
+                                <form class="form-inline" asp-controller="@nameof(Quiz)"
+                                      asp-action="@nameof(Quiz.DeleteAnswer)"
+                                      method="post">
+                                    <input type="hidden" asp-for="QuizId" />
+                                    <input type="hidden" name="answerId" value="@answer.AswerId" />
+                                    <button type="submit" class="btn"><i data-feather="trash-2"></i></button>
+                                </form>
+                            </delete-answer-authorizer>
+                        </role-access>
+                    </div>
+                </div>
+                        i++;
+                    }
+                }
+                <role-access asp-roles="@RoleNames.EDIT">
+                    @if (question.Answers.Count() < 5)
+                    {
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                            <br />
+                            <hr />
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
+
+                        </div>
+                        <div class="col-xs-6 col-sm-6 col-md-6 col-lg-6 ">
+                            <form class="form-inline" asp-controller="@nameof(Quiz)"
+                                  asp-action="@nameof(Quiz.CreateAnswer)"
+                                  method="get">
+                                <input type="hidden" asp-for="QuizId" />
+                                <input type="hidden" name="questionId" value="@question.QuestionId" />
+                                <button type="submit" class="btn"><i data-feather="plus-circle"></i></button>
+                            </form>
+                        </div>
+                    </div>
+                    }
+                </role-access>
+                </div>
+            </div>
+        </div>
+    </role-access>
+
+
+</div>
+}

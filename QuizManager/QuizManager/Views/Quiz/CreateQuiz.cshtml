@@ -1,0 +1,16 @@
+﻿@model CreateQuizViewModel
+<br />
+<br />
+<div class="card p-2 form-card card-color">
+    <form asp-action="@nameof(Quiz.CreateQuiz)"
+          asp-controller="@nameof(Quiz)"
+          method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input class="form-control" asp-for="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>

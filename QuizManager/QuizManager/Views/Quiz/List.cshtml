@@ -1,0 +1,25 @@
+﻿@model QuizListViewModel
+
+@if (!Model.Quizzes.Any())
+{
+    <h3 class="text-center"><em>Currently no quizzes exist</em></h3>
+}
+
+@for (int i = 0; i < Model.Quizzes.Count(); i++)
+{
+    <div class="card m-2 card-color">
+        <div class="container">
+
+                <div class="row">
+                    <div class="col">
+                        <a asp-action="@nameof(Quiz.QuizDetail)" asp-controller="@nameof(Quiz)" asp-route-id="@Model.QuizzArray[i].QuizId">
+                            <h3 class="text-center">
+                                @Model.QuizzArray[i].Title
+                            </h3>
+                        </a>
+                    </div>
+                </div>
+
+        </div>
+    </div>
+}

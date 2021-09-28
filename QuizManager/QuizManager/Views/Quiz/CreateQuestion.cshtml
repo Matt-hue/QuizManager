@@ -1,0 +1,60 @@
+﻿@model CreateQuestionViewModel
+<br />
+<br />
+<form asp-action="@nameof(Quiz.CreateQuestion)"
+      asp-controller="@nameof(Quiz)"
+      method="post">
+
+    <input type="hidden" asp-for="QuizId" />
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+        <div class="form-group">
+            <h2><label asp-for="QuestionTitle"></label></h2>
+            <input class="form-control" asp-for="QuestionTitle">
+            <span asp-validation-for="QuestionTitle" class="text-danger"></span>
+        </div>
+
+
+
+    <div class="card p-2 mb-4 card-color">
+        <div class="form-group">
+            <label asp-for="AnswerA"></label>
+            <input class="form-control" asp-for="AnswerA">
+            <span asp-validation-for="AnswerA" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card p-2 mb-4 card-color">
+        <div class="form-group">
+            <label asp-for="AnswerB"></label>
+            <input class="form-control" asp-for="AnswerB">
+            <span asp-validation-for="AnswerB" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card p-2 mb-4 card-color">
+        <div class="form-group">
+            <label asp-for="AnswerC"></label>
+            <input class="form-control" asp-for="AnswerC">
+            <span asp-validation-for="AnswerC" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card p-2 mb-4 card-color">
+        <div class="form-group">
+            <label asp-for="AnswerD"></label>
+            <input class="form-control" asp-for="AnswerD">
+            <span asp-validation-for="AnswerD" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="card p-2 mb-4 card-color">
+        <div class="form-group">
+            <label asp-for="AnswerE"></label>
+            <input class="form-control" asp-for="AnswerE">
+            <span asp-validation-for="AnswerE" class="text-danger"></span>
+        </div>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+    <a class="btn btn-secondary"
+       asp-action="@nameof(Quiz.QuizDetail)"
+       asp-controller="@nameof(Quiz)"
+       asp-route-id="@Model.QuizId">Cancel</a>
+</form>

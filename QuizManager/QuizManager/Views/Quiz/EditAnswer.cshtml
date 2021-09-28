@@ -1,0 +1,23 @@
+﻿@model EditAnswerViewModel
+
+<div class="card p-1 card-color">
+    <form asp-action="@nameof(Quiz.EditAnswer)"
+          asp-controller="@nameof(Quiz)"
+          method="post">
+
+        <input type="hidden" asp-for="@Model.QuizId" />
+        <input type="hidden" asp-for="@Model.AnswerId" />
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="TitleUpdate"></label>
+            <input class="form-control" asp-for="TitleUpdate">
+            <span asp-validation-for="TitleUpdate" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary"
+           asp-action="@nameof(Quiz.QuizDetail)"
+           asp-controller="@nameof(Quiz)"
+           asp-route-id="@Model.QuizId">Cancel</a>
+    </form>
+</div>

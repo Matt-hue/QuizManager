@@ -1,0 +1,24 @@
+﻿@model CreateAnswerViewModel
+<br />
+<br />
+<div class="card p-1 card-color">
+    <form asp-action="@nameof(Quiz.CreateAnswer)"
+          asp-controller="@nameof(Quiz)"
+          method="post">
+        <input type="hidden" asp-for="QuizId" />
+        <input type="hidden" asp-for="QuestionId" />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Title"></label>
+            <input class="form-control" asp-for="Title">
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a class="btn btn-secondary"
+           asp-action="@nameof(Quiz.QuizDetail)"
+           asp-controller="@nameof(Quiz)"
+           asp-route-id="@Model.QuizId">
+            Cancel
+        </a>
+    </form>
+</div>
